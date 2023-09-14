@@ -1,0 +1,23 @@
+Crear entorno virtual: py -m venv myenv
+Activar entorno virtual: Entrar a la carpeta Scripts: .\myenv\Scripts\activate
+
+pip list
+
+Version de Python: py --version
+
+Instalacion de Flask: pip install flask
+
+listar los modulos que tiene mi maquina virtual: pip list
+
+Lista los modulos con sus repectivas versiones: pip freeze
+
+Descarga en un txt los requerimientos(modulos con respectivas versiones): pip freeze > requirements.txt
+
+Instala todas las dependencias: pip install -r requirements.txt
+
+Desactiva entorno virtual: deactive
+
+
+
+
+
