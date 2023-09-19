@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\Sejo\Desktop\discord-upateco\myenv
+set VIRTUAL_ENV=C:\Users\fonse\OneDrive\Escritorio\discord-upateco\myenv
 
 if not defined PROMPT set PROMPT=$P$G
 
