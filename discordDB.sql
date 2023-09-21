@@ -80,10 +80,10 @@ DROP TABLE IF EXISTS `server`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `server` (
-  `id_server` int NOT NULL,
+  `id_server` int NOT NULL AUTO_INCREMENT,
   `servername` varchar(50) NOT NULL,
   `description_server` text,
-  `creation_date` date DEFAULT NULL,
+  `creation_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_server`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -163,4 +163,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-14 17:11:33
+-- Dump completed on 2023-09-16 16:59:54
