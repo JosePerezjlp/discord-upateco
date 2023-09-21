@@ -1,12 +1,9 @@
-from flask_cors import CORS
-
 from flask import Flask
-
+from flask_cors import CORS
 from config import Config
 
-from .routes.server_bp import server_bp
-from .routes.error_handlers import errors
-
+from .routes.auth_pb import auth_bp
+from .routes.user_bp import user_bp
 from .database import DatabaseConnection
 
 def init_app():
@@ -22,8 +19,7 @@ def init_app():
 
     DatabaseConnection.set_config(app.config)
 
-    app.register_blueprint(server_bp, url_prefix = '/servers')
-    
-    app.register_blueprint(errors, url_prefix = '/errors')
+    app.register_blueprint(auth_bp, url_prefix = '/auth')
+    app.register_blueprint(user_bp, url_prefix='/register')
 
     return app

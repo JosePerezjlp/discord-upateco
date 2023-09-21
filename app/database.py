@@ -23,9 +23,9 @@ class DatabaseConnection:
     @classmethod
     def execute_query(cls, query, database_name=None, params=None):
         cursor = cls.get_connection().cursor()
-        cursor.execute(query, params)
-        cls._connection.commit()
-        
+        cursor.execute(query, params)  
+        print(params)      
+        cls._connection.commit()        
         return cursor
     
     @classmethod
