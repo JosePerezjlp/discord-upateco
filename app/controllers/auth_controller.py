@@ -2,28 +2,22 @@ from ..models.auth_model import User
 
 from flask import request, session
 
-class UserController:
+class AuthController:
 
     @classmethod
-    def register(cls):
+    def login(cls):
         data = request.json
-       
+      
         user = User(
             username = data.get('username'),
-            password_username = data.get('password_username'),
-            email= data.get('email'),
-            profile_img='holaaaaaa',
-			country=data.get('country'),
-			phone=data.get('phone'),
-			birthdate=data.get('birtdate'),
-            
-        ) 
-        exist_user = User.get(User(username = user.username))
-        print(user.serialize())
-        if exist_user is None:
-            User.create_user(user.serialize())
+            password = data.get('password')
+        )
+        print(user.username)
+        if User.is_registered(user):
+            session['username'] = data.get('username')
+            return {"message": "Sesion iniciada"}, 200
         else:
-             return {"message": "Este nombre de usuario no esta disponible"}, 404
+            return {"message": "Usuario o contraseña incorrectos"}, 401
     
     """ @classmethod
     def show_profile(cls):
