@@ -7,15 +7,15 @@ class AuthController:
     @classmethod
     def login(cls):
         data = request.json
-      
-        user = User(
-            username = data.get('username'),
-            password = data.get('password')
-        )
-        print(user.username)
-        if User.is_registered(user):
+        print(data)
+        user = User(**data)        
+        exist = User.is_registered(user)   
+        resultado_string = str(exist[0])   
+        if exist is not None:
+          
             session['username'] = data.get('username')
-            return {"message": "Sesion iniciada"}, 200
+            data_user = {"id":resultado_string,"username":data.get('username')}
+            return {"message": "Sesion iniciada","data":data_user}, 200
         else:
             return {"message": "Usuario o contraseña incorrectos"}, 401
     
@@ -42,13 +42,40 @@ class AuthController:
 
     @classmethod
     def show_profile(cls):
-        username = session.get('username')
-        user = User.get(User(username = username))
+        username = session.get('username')       
+        user = User.get(User(username = username))       
         if user is None:
             return {"message": "Usuario no encontrado"}, 404
         else:
             return user.serialize(), 200
+    # @classmethod
+    # def edit_profile():
+       
+    #     username = session.get('username')
+     
+    #     user = User.get(User(username=username))
+    #     if user is None:
+    #         return {"message": "Usuario no encontrado"}, 404
+    #     data = request.json  
+
+
+    #     if 'nombre' in data:
+    #         user.nombre = data['nombre']
+    #     if 'apellido' in data:
+    #         user.apellido = data['apellido']
+    #     if 'email' in data:
+    #         user.email = data['email']
     
+
+    
+    #     user.save()  
+
+    #     return {"message": "Perfil actualizado exitosamente"}, 200
+
+
+
+
+
     @classmethod
     def logout(cls):
         session.pop('username', None)

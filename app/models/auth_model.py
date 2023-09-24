@@ -34,13 +34,13 @@ class User:
             "profile_img":self.profile_img,
             "country": self.country,
             "phone": self.phone,
-            "birthdate": self.birthdate                                    
+            "birthdate": str(self.birthdate)                                    
         }
     @classmethod
     def create_user(cls, user):
         query = "INSERT INTO discord.user (username, password_username, email, profile_img, country, phone, birthdate) VALUES (%s, %s, %s, %s, %s, %s, %s);"
-        params = user
-        DatabaseConnection.execute_query(query, params)
+        params = user.username, user.password_username, user.email, user.profile_img, user.country, user.phone, user.birthdate
+        DatabaseConnection.execute_query(query, params=params)
 
     @classmethod
     def is_registered(cls,user):
@@ -52,23 +52,42 @@ class User:
             'password': user.password_username
         }
         result = DatabaseConnection.fetch_one(query, params=params)
-
+        
+        if result is None:
+            return False
+        else: return result
+    @classmethod
+    def confirmed_username(cls,user):
+        query = """SELECT username FROM discord.user 
+                WHERE username = %(username)s"""
+        
+        params = {
+            'username': user.username,
+            'password': user.password_username
+        }
+        result = DatabaseConnection.fetch_one(query, params=params)
+       
         if result is not None:
-            return True
-        return False
+            confirm_data = str(result[0])
+            return confirm_data
+        else: return False    
     
     @classmethod
     def get(cls, user):
         query = """SELECT * FROM discord.user 
-        WHERE username = %(username)s"""
+        WHERE username = %(username)s AND password_username = %(password)s"""
         params = user.__dict__
         result = DatabaseConnection.fetch_one(query, params=params)
-
+        
         if result is not None:
             return cls(
                 user_id = result[0],
-                password_username = result[1],
-                password = result[2],
-                             
+                username = result[1],
+                password_username = result[2],
+                email = result[3],
+                profile_img = result[4],
+                country = result[5],
+                phone = result[6],
+                birthdate = result[7]                             
             )
         return None

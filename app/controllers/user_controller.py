@@ -6,24 +6,16 @@ class UserController:
 
     @classmethod
     def register(cls):
-        data = request.json
        
-        user = User(
-            username = data.get('username'),
-            password_username = data.get('password_username'),
-            email= data.get('email'),
-            profile_img='holaaaaaa',
-			country=data.get('country'),
-			phone=data.get('phone'),
-			birthdate=data.get('birtdate'),
-            
-        ) 
-        exist_user = User.get(User(username = user.username))
-        print(user.serialize())
-        if exist_user is None:
-            User.create_user(user.serialize())
-        else:
-             return {"message": "Este nombre de usuario no esta disponible"}, 404
+        data = request.json
+        print(f'Estoy recibiendo: {data}')        
+        user = User(**data)
+        print(user)
+        confirm = User.confirmed_username(user)       
+        if confirm != data.get('username'):
+            User.create_user(user)
+            return {'message': 'Cuenta creada con exito'}, 201
+        else : return {'message': 'Este nombre de usuario esta en uso'}, 400
     
     """ @classmethod
     def show_profile(cls):

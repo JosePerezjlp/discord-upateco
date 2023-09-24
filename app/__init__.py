@@ -11,7 +11,7 @@ def init_app():
     
     app = Flask(__name__, static_folder = Config.STATIC_FOLDER, template_folder = Config.TEMPLATE_FOLDER)
     
-    CORS(app, supports_credentials=True)
+    CORS(app,resources={r"/*": {"origins": "*"}})
 
     app.config.from_object(
         Config
@@ -19,7 +19,9 @@ def init_app():
 
     DatabaseConnection.set_config(app.config)
 
-    app.register_blueprint(auth_bp, url_prefix = '/auth')
-    app.register_blueprint(user_bp, url_prefix='/register')
+    app.register_blueprint(auth_bp, url_prefix='/auth', name='auth_login')
+    app.register_blueprint(auth_bp, url_prefix='/auth', name='auth_profile')
+
+    app.register_blueprint(user_bp, url_prefix='/app')
 
     return app
