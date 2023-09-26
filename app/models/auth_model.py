@@ -17,7 +17,8 @@ class User:
         self.status_id = status_id
         self.role_id = role_id """
 
-    def __init__(self, **kwargs):      
+    def __init__(self, **kwargs):   
+        # self.id_user = kwargs.get('id_user')
         self.username = kwargs.get('username')
         self.password_username = kwargs.get('password_username')
         self.email = kwargs.get('email')
@@ -27,7 +28,8 @@ class User:
         self.birthdate = kwargs.get('birthdate')
     
     def serialize(self):
-        return {           
+        return {
+                    
             "username": self.username,
             "password_username": self.password_username,
             "email": self.email,
@@ -53,9 +55,12 @@ class User:
         }
         result = DatabaseConnection.fetch_one(query, params=params)
         
-        if result is None:
-            return False
-        else: return result
+        if result is not None:
+            confirm_data = str(result[0])
+           
+            return confirm_data
+        else: return False  
+        
     @classmethod
     def confirmed_username(cls,user):
         query = """SELECT username FROM discord.user 
@@ -73,16 +78,18 @@ class User:
         else: return False    
     
     @classmethod
-    def get(cls, user):
+    def arre(cls, user):
         query = """SELECT * FROM discord.user 
-        WHERE username = %(username)s AND password_username = %(password)s"""
+        WHERE username = %(username)s"""
+       
         params = user.__dict__
         result = DatabaseConnection.fetch_one(query, params=params)
-        
         if result is not None:
+           
             return cls(
-                user_id = result[0],
+                
                 username = result[1],
+                id_user = result[0],                
                 password_username = result[2],
                 email = result[3],
                 profile_img = result[4],
@@ -91,3 +98,68 @@ class User:
                 birthdate = result[7]                             
             )
         return None
+    @classmethod       
+    def actualizar(cls,user1,user):
+        
+        # print("->",type(user1))
+        usuario= User.arre(user1)
+        # print("desde modelo..metodo actualizar-->",usuario)
+        print(usuario.serialize())
+        if usuario is not None:
+            #actualizamos datos
+            query="UPDATE discord.user SET "
+            if user.email!=None:
+                consulta=query + "email=%s WHERE username=%s"
+                params= user.email, user1.username 
+                DatabaseConnection.execute_query(consulta,params=params)
+            if user.username!=None:
+                consulta=query + "username=%s WHERE username=%s"
+                params= user.username, user1.username 
+                DatabaseConnection.execute_query(consulta,params=params)
+            if user.phone!=None:
+                consulta=query + "phone=%s WHERE username=%s"
+                params= user.phone, user1.username 
+                DatabaseConnection.execute_query(consulta,params=params)
+            if user.country!=None:
+                consulta=query + "country=%s WHERE username=%s"
+                params= user.country, user1.username 
+                DatabaseConnection.execute_query(consulta,params=params)
+            if user.password_username!=None:
+                consulta=query + "password_username=%s WHERE username=%s"
+                params= user.password_username, user1.username 
+                DatabaseConnection.execute_query(consulta,params=params)    
+            if user.birthdate!=None:
+                consulta=query + "birthdate=%s WHERE username=%s"
+                params= user.birthdate, user1.username 
+                DatabaseConnection.execute_query(consulta,params=params)
+
+            return {"message":f"Los datos del usuario {user1.username} fueron modificados con exito"},200
+        else:
+            return {"message":"usuario no encontrado"}
+    @classmethod
+    def update(cls, user,id_user):
+    
+        query_parts = []
+        params = []
+
+        for key, value in user.items():
+            query_parts.append(f"{key} = %s")
+            params.append(value)
+
+        
+        params.append(id_user)  
+        print(f"aca las querys{query_parts}")
+        print(params)
+       
+        query = "UPDATE discord.user SET " + ", ".join(query_parts) + " WHERE id_user = %s"
+        print(f"esta es la query{query}")
+       
+        DatabaseConnection.execute_query(query, params)
+
+    @classmethod
+    def update_password(cls, new_password, id_user): 
+        query = "UPDATE discord.user SET password_user = %s WHERE id_user = %s"
+
+        params =  new_password,id_user
+        print(params)
+        DatabaseConnection.execute_query(query, params)
