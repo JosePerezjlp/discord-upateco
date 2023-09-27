@@ -9,11 +9,11 @@ class AuthController:
         data = request.json 
         user = User(**data)        
         exist = User.is_registered(user)   
-       
+        
         if exist is not None:
            
             session['username'] = data.get('username')
-            session['id_user'] = exist
+            session['id_user'] = exist.get('id_user')
           
             data_user = {"id":exist,"username":data.get('username')}
             return {"message": "Sesion iniciada","data":data_user}, 200
@@ -31,7 +31,7 @@ class AuthController:
         if confirm != data.get('username'):
             User.create_user(user)
             return {'message': 'Cuenta creada con exito'}, 201
-        else : return {'message': 'Este nombre de usuario esta en uso'}, 400
+        else : return {'message': 'El nombre de usuario esta en uso'}, 400
 
     @classmethod
     def show_profile(cls):

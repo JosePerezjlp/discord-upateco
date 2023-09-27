@@ -46,28 +46,28 @@ class User:
 
     @classmethod
     def is_registered(cls,user):
-        query = """SELECT * FROM discord.user 
-                WHERE username = %(username)s AND password_username = %(password)s"""
-       
-        params = {
-            'username': user.username,
-            'password': user.password_username
-        }
-        result = DatabaseConnection.fetch_one(query, params=params)
         
+            query = """SELECT * FROM discord.user 
+                    WHERE username = %(username)s AND password_username = %(password)s"""
         
-        if result is not None:
-             user_data = {
-            'id_user': result[0],
-            'username': result[1],
-            'email': result[2],
-            'country': result[3],
-            'phone': result[4],
-            'birthdate': result[5]
-            # Agrega todos los demás campos que desees recuperar aquí
-             }
-             return user_data
-        else: return None  
+            params = {
+                'username': user.username,
+                'password': user.password_username
+            }
+            result = DatabaseConnection.fetch_one(query, params=params)
+            
+            if result is not None:
+                user_data = {
+                'id_user': result[0],
+                'username': result[1],
+                'email': result[2],
+                'country': result[3],
+                'phone': result[4],
+                'birthdate': result[5]
+                # Agrega todos los demás campos que desees recuperar aquí
+                }
+                return user_data
+            else:return None
         
     @classmethod
     def confirmed_username(cls,user):
@@ -87,25 +87,28 @@ class User:
     
     @classmethod
     def arre(cls, user):
-        query = """SELECT * FROM discord.user 
-        WHERE username = %(username)s"""
-       
-        params = user.__dict__
-        result = DatabaseConnection.fetch_one(query, params=params)
-        if result is not None:
-           
-            return cls(
-                
-                username = result[1],
-                id_user = result[0],                
-                password_username = result[2],
-                email = result[3],
-                profile_img = result[4],
-                country = result[5],
-                phone = result[6],
-                birthdate = result[7]                             
-            )
-        return None
+        try:
+            query = """SELECT * FROM discord.user 
+            WHERE username = %(username)s"""
+        
+            params = user.__dict__
+            result = DatabaseConnection.fetch_one(query, params=params)
+            if result is not None:
+            
+                return cls(
+                    
+                    username = result[1],
+                    id_user = result[0],                
+                    password_username = result[2],
+                    email = result[3],
+                    profile_img = result[4],
+                    country = result[5],
+                    phone = result[6],
+                    birthdate = result[7]                             
+                )
+        except Exception as e:
+            # Manejar cualquier excepción que pueda ocurrir durante la consulta
+            print(f'Ocurrió un error: {str(e)}')
     @classmethod       
     def actualizar(cls,user1,user):
         
