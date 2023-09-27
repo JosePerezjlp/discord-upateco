@@ -3,7 +3,7 @@ from flask_cors import CORS
 from config import Config
 
 from .routes.auth_pb import auth_bp
-from .routes.user_bp import user_bp
+
 from .database import DatabaseConnection
 
 def init_app():
@@ -20,6 +20,6 @@ def init_app():
 
     app.register_blueprint(auth_bp, url_prefix='/auth')
 
-    app.register_blueprint(user_bp, url_prefix='/app')
+
 
     return app

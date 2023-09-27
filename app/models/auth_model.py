@@ -46,20 +46,28 @@ class User:
 
     @classmethod
     def is_registered(cls,user):
-        query = """SELECT id_user FROM discord.user 
+        query = """SELECT * FROM discord.user 
                 WHERE username = %(username)s AND password_username = %(password)s"""
-        
+       
         params = {
             'username': user.username,
             'password': user.password_username
         }
         result = DatabaseConnection.fetch_one(query, params=params)
         
+        
         if result is not None:
-            confirm_data = str(result[0])
-           
-            return confirm_data
-        else: return False  
+             user_data = {
+            'id_user': result[0],
+            'username': result[1],
+            'email': result[2],
+            'country': result[3],
+            'phone': result[4],
+            'birthdate': result[5]
+            # Agrega todos los demás campos que desees recuperar aquí
+             }
+             return user_data
+        else: return None  
         
     @classmethod
     def confirmed_username(cls,user):

@@ -9,9 +9,9 @@ class AuthController:
         data = request.json 
         user = User(**data)        
         exist = User.is_registered(user)   
-        print(exist)
+       
         if exist is not None:
-          
+           
             session['username'] = data.get('username')
             session['id_user'] = exist
           
@@ -20,12 +20,23 @@ class AuthController:
         else:
             return {"message": "Usuario o contraseña incorrectos"}, 401
     
-
+    @classmethod
+    def register(cls):
+       
+        data = request.json
+        print(f'Estoy recibiendo: {data}')        
+        user = User(**data)
+        
+        confirm = User.confirmed_username(user)       
+        if confirm != data.get('username'):
+            User.create_user(user)
+            return {'message': 'Cuenta creada con exito'}, 201
+        else : return {'message': 'Este nombre de usuario esta en uso'}, 400
 
     @classmethod
     def show_profile(cls):
         username = session.get("username")
-        print(username)  
+       
         user = User.arre(User(username = username))       
         if user is not None:
             
@@ -33,18 +44,7 @@ class AuthController:
             
         else:
             return {"message": "Usuario no encontrado"}, 404
-    
-    @classmethod
-    def show_profile(cls):
-        username = session.get("username")
-        print(username)  
-        user = User.arre(User(username = username))       
-        if user is not None:
-            
-            return user.serialize(), 200
-            
-        else:
-            return {"message": "Usuario no encontrado"}, 404
+   
             
     @classmethod
     def actualizar(cls):
