@@ -1,4 +1,5 @@
 from ..database import DatabaseConnection
+from .channel_model import Channel
 class Server:
     """Server model class"""
 
@@ -10,66 +11,52 @@ class Server:
         self.creation_date = creation_date
 
     def serialize(self):
-        """Serialize object representation
-        Returns:
-            dict: Object representation
-        Note:
-            - The last_update attribute is converted to string
-            - The special_features attribute is converted to list if it is not
-            null in the database. Otherwise, it is converted to None
-            - The attributes rental_rate and replacement_cost are converted to 
-            int, because the Decimal type may lose precision if we convert 
-            it to float
-        """
+      
         return {
             "id_server": self.id_server,
             "servername": self.servername,
             "description_server": self.description_server,
             "creation_date": str(self.creation_date)
         }
-    
+   
     @classmethod
-    def get(cls, server):
-        """Get a server by id
-        Args:
-            - server (Server): Server object with the id attribute
-        Returns:
-            - Server: Server object
-        """
-        try:
-            query = """SELECT id_server, servername, description_server, creation_date FROM discord.server WHERE id_server = %s"""
-            params = server.id_server,
-            result = DatabaseConnection.fetch_one(query, params=params)
+    def get(cls,id_user,id_server):
+        info = Channel.get_cs(id_user,id_server) 
+        print(f"{info}") 
+        # try:
+        #     query = """SELECT id_server, servername, description_server, creation_date FROM discord.server WHERE id_server = %s"""
+        #     params = idserver.id_server,
+        #     result = DatabaseConnection.fetch_one(query, params=params)
 
-            if result is not None:
-                return cls(*result)
-        except Exception as e:
-        # Manejar cualquier excepción que pueda ocurrir durante la consulta
-            print(f'Ocurrió un error: {str(e)}')       
+        #     if result is not None:
+        #         return cls(*result)
+        # except Exception as e:
+        # # Manejar cualquier excepción que pueda ocurrir durante la consulta
+        #     print(f'Ocurrió un error: {str(e)}')       
     
     @classmethod
     def get_all(cls, id_user):
-        # try:
-            params = (id_user,)
-            print(params)
-            query = """SELECT DISTINCT u.id_user, u.username, s.id_server, s.servername
-                        FROM discord.user_server us
-                        INNER JOIN discord.user u ON us.id_user = u.id_user
-                        INNER JOIN discord.server s ON s.id_server = us.id_server 
-                        WHERE u.id_user = %s;"""
-            results = DatabaseConnection.fetch_all(query, params=params)
+        try:
+                params = (id_user,)
+                query = "SELECT DISTINCT u.id_user, u.username, s.id_server, s.servername FROM discord.user_server us INNER JOIN discord.user u ON us.id_user = u.id_user INNER JOIN discord.server s ON s.id_server = us.id_server WHERE u.id_user = %s;"
 
-            servers = []
-            if results is not None:
-                for result in results:
-                    # Crear objetos Server a partir de los resultados y agregarlos a la lista servers
-                    server = cls(*result)
-                    servers.append(server)
-                print(servers)
+                with DatabaseConnection.get_connection() as connection:
+                    cursor = connection.cursor()
+                    cursor.execute(query, params)
+                    results = cursor.fetchall()
+                    
+
+                servers = []
+                if results:
+                    for result in results:
+                        # Crear objetos Server a partir de los resultados y agregarlos a la lista servers
+                        server = cls(*result)
+                        ref = server.serialize()
+                        servers.append(ref)
+
                 return servers
-        # except Exception as e:
-        #     # Manejar cualquier excepción que pueda ocurrir durante la consulta
-        #     print(f'Ocurrió un error: {str(e)}')
+        except Exception as e:
+                return (f'{str(e)}')
     # @classmethod
     # def get_all(cls,id_user):
     #     """Get all servers
@@ -110,16 +97,14 @@ class Server:
        
         #print(f'Aca tengo: {server.servername}')
         #print(f'Por aca tengo: {server.description_server}')
-        try:
-            query = """INSERT INTO discord.server (servername, description_server) VALUES (%s, %s)"""
-            params = server.servername, server.description_server
-            cursor = DatabaseConnection.execute_query(query, params=params)
+        
+        query = """INSERT INTO discord.server (servername, description_server) VALUES (%s, %s)"""
+        params = server.servername, server.description_server
+        cursor = DatabaseConnection.execute_query(query, params=params)
+        if cursor is not None:
             inserted_id = cursor.lastrowid
             return inserted_id
-        except Exception as e:
-        # Manejar cualquier excepción que pueda ocurrir durante la consulta
-            print(f'Ocurrió un error: {str(e)}')       
-
+        else: return None 
         
     @classmethod
     def create_UserServer(cls, id_user):

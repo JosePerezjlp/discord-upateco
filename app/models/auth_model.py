@@ -46,40 +46,44 @@ class User:
 
     @classmethod
     def is_registered(cls,user):
-        
+        try:
             query = """SELECT * FROM discord.user 
                     WHERE username = %(username)s AND password_username = %(password)s"""
-        
+
             params = {
                 'username': user.username,
                 'password': user.password_username
             }
-            result = DatabaseConnection.fetch_one(query, params=params)
-            
+
+            with DatabaseConnection.get_connection() as connection:
+                result = DatabaseConnection.fetch_one(query, params=params)
+
             if result is not None:
                 user_data = {
-                'id_user': result[0],
-                'username': result[1],
-                'email': result[2],
-                'country': result[3],
-                'phone': result[4],
-                'birthdate': result[5]
-                # Agrega todos los demás campos que desees recuperar aquí
+                    'id_user': result[0],
+                    'username': result[1],
+                    'email': result[2],
+                    'country': result[3],
+                    'phone': result[4],
+                    'birthdate': result[5]
+                    # Agrega todos los demás campos que desees recuperar aquí
                 }
                 return user_data
-            else:return None
+            else:
+                return None
+        except Exception as e:
+        # Manejar cualquier excepción que pueda ocurrir durante la consulta
+            return(e)
         
     @classmethod
     def confirmed_username(cls,user):
         query = """SELECT username FROM discord.user 
-                WHERE username = %(username)s"""
-        
+                WHERE username = %(username)s"""        
         params = {
             'username': user.username,
             'password': user.password_username
         }
-        result = DatabaseConnection.fetch_one(query, params=params)
-       
+        result = DatabaseConnection.fetch_one(query, params=params)       
         if result is not None:
             confirm_data = str(result[0])
             return confirm_data
