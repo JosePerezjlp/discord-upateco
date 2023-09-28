@@ -17,7 +17,9 @@ class Channel:
             "chaneel_name": self.chaneel_name,
             "description_channel": self.description_channel,
             "id_server": self.id_server
+                    
         }
+    
         
     @classmethod
     def get_cs(cls, id_user, id_server):
@@ -38,8 +40,8 @@ class Channel:
                 }
                 channels.append(cls)
             return channels
-        else: return None
-        
+        else: return None       
+
     
     @classmethod
     def get(cls, channel):

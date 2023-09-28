@@ -16,24 +16,22 @@ class ServerController:
         if result is not None:
             return {"message":"channels encontrador","data":result}, 200
         else:
-            raise ServerNotFound(id_server) 
-                 
+            raise ServerNotFound(id_server)                  
         
     @classmethod
     def get_all(cls):
         """Get all servers"""
         id_user = session.get('id_user')
-        print(id_user)
+        # print(id_user)
         server_objects = Server.get_all(id_user)
-        print(f"este es controller {server_objects}")
+        # print(f"este es controller {server_objects}")
         servers = []       
 
         if server_objects is not None:
-            for server in server_objects:
            
-                servers.append(server)
-            return {'message':"funciona","data":servers}, 200
-        else: return {'message':"no se encontro nada"},400    
+            return {'message':"funciona","data":server_objects}, 200
+        else: return {'message':"no se encontro nada"},400 
+
 
     @classmethod
     def create(cls):

@@ -49,7 +49,7 @@ class Server:
                 servers = []
                 if results:
                     for result in results:
-                        # Crear objetos Server a partir de los resultados y agregarlos a la lista servers
+                       
                         server = cls(*result)
                         ref = server.serialize()
                         servers.append(ref)

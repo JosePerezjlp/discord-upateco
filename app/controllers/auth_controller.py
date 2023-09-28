@@ -16,10 +16,10 @@ class AuthController:
             session['id_user'] = exist.get('id_user')
           
             data_user = {"id":exist,"username":data.get('username')}
-            return {"message": "Sesion iniciada","data":data_user}, 200
+            return {"message": "Sesion iniciada","data":exist}, 200
         else:
             return {"message": "Usuario o contraseña incorrectos"}, 401
-    
+                    
     @classmethod
     def register(cls):
        
