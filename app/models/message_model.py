@@ -37,7 +37,7 @@ class Message:
         params = id_channel,
         results = DatabaseConnection.fetch_all(query, params=params)
         
-        message_list = []
+        message_list = [] 
         for result in results:
             message_list.append(Message(
                 id_message = result[0],
@@ -45,8 +45,8 @@ class Message:
                 creation_message = result[2],
                 id_user = result[3],
                 id_channel = result[4]
-            ))
-        return message_list
+            ))    
+        return message_list 
 
     @classmethod
     def create_message(cls, message):
